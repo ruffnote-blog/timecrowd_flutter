@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_oauth/lib/flutter_auth.dart';
+import 'package:flutter_oauth/lib/model/config.dart';
+import 'package:flutter_oauth/lib/oauth.dart';
+import 'package:flutter_oauth/lib/token.dart';
 
 Future main() async {
   await DotEnv().load('.env');
@@ -49,13 +53,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  OAuth flutterOAuth;
 
   @override
   void initState() {
     print(DotEnv().env['VAR_NAME']);
+
+    flutterOAuth = FlutterOAuth(Config(
+        "https://timecrowd.net/oauth/authorize",
+        "https://timecrowd.net/oauth/token",
+        DotEnv().env['TIMECROWD_APP_ID'],
+        DotEnv().env['TIMECROWD_SECRET'],
+        "http://localhost:8080",
+        "code"));
   }
 
-  void _incrementCounter() {
+  void _incrementCounter() async {
+    Token token = await flutterOAuth.performAuthorization();
+    print(token.accessToken);
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
