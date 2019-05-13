@@ -27,6 +27,7 @@ dependencies:
   flutter_oauth:
     git: git://github.com/ibrierley/FlutterOAuth.git
   url_launcher:
+  http:
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,8 @@ import 'package:flutter_oauth/lib/flutter_auth.dart';
 import 'package:flutter_oauth/lib/model/config.dart';
 import 'package:flutter_oauth/lib/oauth.dart';
 import 'package:flutter_oauth/lib/token.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 Future main() async {
   await DotEnv().load('.env');
@@ -71,6 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() async {
     Token token = await flutterOAuth.performAuthorization();
     print(token.accessToken);
+
+    http.Response response = await http.get('https://timecrowd.net/api/v1/user',
+        headers: {'Authorization': 'Bearer ${token.accessToken}'});
+    print(json.decode(response.body)['nickname']);
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
