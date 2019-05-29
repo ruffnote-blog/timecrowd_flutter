@@ -57,6 +57,13 @@ packages:
       url: "git://github.com/ibrierley/FlutterOAuth.git"
     source: git
     version: "0.0.1"
+  flutter_secure_storage:
+    dependency: "direct main"
+    description:
+      name: flutter_secure_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.1+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter

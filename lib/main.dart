@@ -4,6 +4,7 @@ import 'package:flutter_oauth/lib/flutter_auth.dart';
 import 'package:flutter_oauth/lib/model/config.dart';
 import 'package:flutter_oauth/lib/oauth.dart';
 import 'package:flutter_oauth/lib/token.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -71,11 +72,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementCounter() async {
-    Token token = await flutterOAuth.performAuthorization();
-    print(token.accessToken);
+    final storage = new FlutterSecureStorage();
+    String accessToken = await storage.read(key: 'timecrowdAccessToken');
+
+    if (accessToken == null) {
+      Token token = await flutterOAuth.performAuthorization();
+      accessToken = token.accessToken;
+      await storage.write(key: 'timecrowdAccessToken', value: accessToken);
+    }
 
     http.Response response = await http.get('https://timecrowd.net/api/v1/user',
-        headers: {'Authorization': 'Bearer ${token.accessToken}'});
+        headers: {'Authorization': 'Bearer ${accessToken}'});
     print(json.decode(response.body)['nickname']);
 
     setState(() {
