@@ -72,6 +72,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _fetchDailyTasks();
   }
 
+  Future<http.Response> _fetch(String path) async {
+    return await http.get('https://timecrowd.net/api/v1/$path',
+        headers: <String, String>{'Authorization': 'Bearer $_accessToken'});
+  }
+
   Future<void> _fetchDailyTasks() async {
     final http.Response response = await _fetch('user/daily_activity');
     final List<dynamic> decoded = json.decode(response.body)['tasks'];
@@ -79,11 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _tasks = decoded.map((dynamic d) => Task.fromJson(d)).toList();
     });
-  }
-
-  Future<http.Response> _fetch(String path) async {
-    return await http.get('https://timecrowd.net/api/v1/$path',
-        headers: <String, String>{'Authorization': 'Bearer $_accessToken'});
   }
 
   void _refresh() {
