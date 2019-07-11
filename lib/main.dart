@@ -8,6 +8,7 @@ import 'package:flutter_oauth/lib/oauth.dart';
 import 'package:flutter_oauth/lib/token.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'task.dart';
 
@@ -100,9 +101,28 @@ class _MyHomePageState extends State<MyHomePage> {
         itemCount: _tasks.length,
         itemBuilder: (BuildContext context, int index) {
           final Task task = _tasks[index];
-          return ListTile(
-            title: Text(task.title),
-            subtitle: Text(task.team.name),
+          return Container(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(task.title),
+                    Text(task.team.name),
+                  ],
+                ),
+                if (!task.url.isEmpty)
+                  IconButton(
+                    icon: Icon(Icons.link),
+                    tooltip: task.url,
+                    onPressed: () {
+                      launch(task.url);
+                    },
+                  ),
+              ],
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
